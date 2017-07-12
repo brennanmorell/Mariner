@@ -15,15 +15,18 @@ If you don't have pip, you can install it here: https://pip.pypa.io/en/stable/in
 
 * [Python3](https://github.com/python)
 * [GDAX-Python](https://github.com/danpaquin/gdax-python)
-* Other tech that I'll recall later...
+* Other tech. Will udpate later.
 
 ## Further Reading
 
 Check out GDAX's official API docs for inspiration and clarification (https://docs.gdax.com/)
 
-## Authors
+## 
 
-* **Brennan Morell** - *Sole Contributor (for now...)*
+* **Brennan Morell** - *Developer, Quant Analyst*
+* **Surya Bahubalendruni** - *Architecture, Quant Analyst*
+* **Ryan Sharma** - *Strategy*
+* **Jacob Solawetz** - *Quant Research*
 
 ## License
 
@@ -32,7 +35,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Shouts out to https://github.com/danpaquin for the dope python wrapper
-* Inspiration: Anthony Kiedis from the Red Hot Chili Peppers, Captain Ahab
+* Inspiration: Captain Ahab, [MrSuicidesheep](https://www.youtube.com/watch?v=N2mVfpDHr9k)
 
 ## Help Me Buy Coffee
 * BTC Wallet: 14zD9tvv6BbF47PYtyXaF9b8cSgwG5btxo
@@ -40,7 +43,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * LTC Wallet: LXxpRwqGtU61yuNc4gw7Ma7Dz4sAj6w7QM
 
 ##### Provided under MIT License by Brennan Morell.
-*Note: this library may be subtly broken or buggy. Use (and trade) at your own risk:*
+*Note: this library may be subtly broken or buggy. Use and trade at your own discretion:*
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS 
 FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
