@@ -1,6 +1,6 @@
 # MARINER
 
-Mariner is a cryptocurrency auto-trader built to exploit probablistic price movements that follow intentional price manipulation and the execution of "whale orders".
+Mariner is a cryptocurrency auto-trader built to exploit probabilistic price movements that follow intentional price manipulation and the execution of "whale orders".
 
 ## Getting Started
 
