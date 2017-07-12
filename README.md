@@ -23,8 +23,8 @@ Check out GDAX's official API docs for inspiration and clarification (https://do
 
 ## 
 
-* **Brennan Morell** - *Developer, Quant Analyst*
-* **Surya Bahubalendruni** - *Architecture, Quant Analyst*
+* **Brennan Morell** - *Development, Quant Analysis*
+* **Surya Bahubalendruni** - *Architecture, Quant Analysis*
 * **Ryan Sharma** - *Strategy*
 * **Jacob Solawetz** - *Quant Research*
 
