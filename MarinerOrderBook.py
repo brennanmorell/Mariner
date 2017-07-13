@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from GDAX.PublicClient import PublicClient
 from GDAX.WebsocketClient import WebsocketClient
-from WhaleLevel import WhaleLevel
+from WhaleOrder import WhaleOrder
 
 class MarinerOrderBook(GDAX.OrderBook):
     def __init__(self, ticker, threshold):
@@ -91,40 +91,39 @@ class MarinerOrderBook(GDAX.OrderBook):
 
 
     def checkWhaleAddBuy(self, order):
+        ID = order['id']
         price = Decimal(order['price'])
         volume = Decimal(order['size'])
         if self.isWhale(volume): #too low in practice
-            print("WHALE ENTERED (BUY): price=" + str(price) + " volume=" + str(volume))
-            whale_bid_level = self.get_whale_bids(price)
-            if whale_bid_level is None:
-                whale_bid_level = WhaleLevel(price, volume)
-            else:
-                whale_bid_level.add_volume(volume)
-            self.set_whale_bids(price, whale_bid_level)
-            top_whale_price = self.get_whale_bid()
-            if  self._topBuyWhale is None or top_whale_price != self._topBuyWhale.get_price():
-                self._topBuyWhale = self._buyWhales.get(top_whale_price)
-                self.topWhaleChangedHandler(self._topBuyWhale, "BUY")
-            else:
-                print("    top BUY whale is still " + str(self._topBuyWhale))
+            whale_bid_order = self.get_whale_bids(price)
+            if whale_bid_order is None or volume > whale_bid_order.get_volume():
+                print("WHALE ENTERED (BUY): price=" + str(price) + " volume=" + str(volume))
+                whale_bid_order = WhaleOrder(ID, price, volume)
+                self.set_whale_bids(price, whale_bid_order)
+                top_whale_price = self.get_whale_bid()
+                if  self._topBuyWhale is None or top_whale_price != self._topBuyWhale.get_price():
+                    self._topBuyWhale = self._buyWhales.get(top_whale_price)
+                    self.topWhaleChangedHandler(self._topBuyWhale, "BUY")
+                else:
+                    print("    top BUY whale is still " + str(self._topBuyWhale))
+
 
     def checkWhaleAddSell(self, order):
+        ID = order['id']
         price = Decimal(order['price'])
         volume = Decimal(order['size'])
         if self.isWhale(volume): #too low in practice
-            print("WHALE ENTERED (SELL): price=" + str(price) + " volume=" + str(volume))
-            whale_ask_level = self.get_whale_asks(price)
-            if whale_ask_level is None:
-                whale_ask_level = WhaleLevel(price, volume)
-            else:
-                whale_ask_level.add_volume(volume)
-            self.set_whale_asks(price, whale_ask_level)
-            top_whale_price = self.get_whale_ask()
-            if self._topSellWhale is None or top_whale_price != self._topSellWhale.get_price():
-                self._topSellWhale = self._sellWhales.get(top_whale_price)
-                self.topWhaleChangedHandler(self._topSellWhale, "SELL")
-            else:
-                print("    top SELL whale is still " + str(self._topSellWhale))
+            whale_ask_order = self.get_whale_asks(price)
+            if whale_ask_order is None or volume > whale_ask_order.get_volume():
+                print("WHALE ENTERED (SELL): price=" + str(price) + " volume=" + str(volume))
+                whale_ask_order = WhaleOrder(ID, price, volume)
+                self.set_whale_asks(price, whale_ask_order)
+                top_whale_price = self.get_whale_ask()
+                if self._topSellWhale is None or top_whale_price != self._topSellWhale.get_price():
+                    self._topSellWhale = self._sellWhales.get(top_whale_price)
+                    self.topWhaleChangedHandler(self._topSellWhale, "SELL")
+                else:
+                    print("    top SELL whale is still " + str(self._topSellWhale))
 
 
     def remove(self, order):
@@ -156,31 +155,30 @@ class MarinerOrderBook(GDAX.OrderBook):
 
 
     def checkWhaleRemoveBuy(self, order):
+        ID = order['id']
         price = Decimal(order['price'])
         volume = Decimal(order['size'])
-        whale_bid_level = self.get_whale_bids(price)
-        if whale_bid_level is not None:
-            whale_bid_level.remove_volume(volume)
+        whale_bid_order = self.get_whale_bids(price)
+        if whale_bid_order is not None and whale_bid_order.get_id() == ID:
             print("WHALE LEFT (BUY): price=" + str(price) + " volume=" + str(volume))
-            if not self.isWhale(whale_bid_level.get_volume()):
-                self.remove_whale_bids(price)
-                top_whale_price = self.get_whale_bid()
+            self.remove_whale_bids(price)
+            top_whale_price = self.get_whale_bid()
+            if top_whale_price != self._topBuyWhale.get_price():
                 self._topBuyWhale = self._buyWhales.get(top_whale_price)
                 self.topWhaleChangedHandler(self._topBuyWhale, "BUY")
             else:
                 print("    top BUY whale is still " + str(self._topBuyWhale))
 
-
     def checkWhaleRemoveSell(self, order):
+        ID = order['id']
         price = Decimal(order['price'])
         volume = Decimal(order['size'])
-        whale_ask_level = self.get_whale_asks(price)
-        if whale_ask_level is not None:
-            whale_ask_level.remove_volume(volume)
-            print("WHALE ENTERED (SELL): price=" + str(price) + " volume=" + str(volume))
-            if not self.isWhale(whale_ask_level.get_volume()):
-                self.remove_whale_asks(price)
-                top_whale_price = self.get_whale_ask()
+        whale_ask_order = self.get_whale_asks(price)
+        if whale_ask_order is not None and whale_ask_order.get_id() == ID:
+            print("WHALE LEFT (SELL): price=" + str(price) + " volume=" + str(volume))
+            self.remove_whale_asks(price)
+            top_whale_price = self.get_whale_ask()
+            if top_whale_price != self._topSellWhale.get_price():
                 self._topSellWhale = self._sellWhales.get(top_whale_price)
                 self.topWhaleChangedHandler(self._topSellWhale, "SELL")
             else:
@@ -241,23 +239,31 @@ class MarinerOrderBook(GDAX.OrderBook):
 
 
     def checkWhaleChangeBuy(self, order):
+        ID = order['id']
         price = Decimal(order['price'])
         new_volume = order['new_size']
-        whale_bid_level = self.get_whale_bids(price)
-        if not whale_bid_level == None:
+        whale_bid_order = self.get_whale_bids(price)
+        if not whale_bid_order == None:
             print("BUY WHALE CHANGED: price=" + price + " new_volume=" + new_volume)
-            whale_bid_level.setVolume(new_volume)
-            self.set_whale_bids(price, whale_bid_level)
+            if self.isWhale(new_volume):
+                whale_bid_order.setVolume(new_volume)
+                self.set_whale_bids(price, whale_bid_order)
+            else:
+                self.checkWhaleRemoveBuy(order)
 
 
-    def checkWhaleChangeSell(self, order):
+    def checkWhaleChangeBuy(self, order):
+        ID = order['id']
         price = Decimal(order['price'])
         new_volume = order['new_size']
-        whale_ask_level = self.get_whale_asks(price)
-        if not whale_ask_level == None:
+        whale_ask_order = self.get_whale_asks(price)
+        if not whale_ask_order == None:
             print("SELL WHALE CHANGED: price=" + price + " new_volume=" + new_volume)
-            whale_ask_level.setVolume(new_volume)
-            self.set_whale_asks(price, whale_ask_level)
+            if self.isWhale(new_volume):
+                whale_bid_order.setVolume(new_volume)
+                self.set_whale_asks(price, whale_ask_order)
+            else:
+                self.checkWhaleRemoveAsk(order)
 
 
     def get_current_book(self):
