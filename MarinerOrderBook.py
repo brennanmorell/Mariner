@@ -13,11 +13,14 @@ class MarinerOrderBook(GDAX.OrderBook):
         self._threshold = threshold
         self._bid_whales = RBTree()
         self._ask_whales = RBTree()
+        self.bookChanged = None
+        self.whaleEnteredMarket = None
 
 
-    def registerHandlers(self, bookChangedHandler):
+    def registerHandlers(self, bookChangedHandler, whaleEnteredMarketHandler):
         print("    registering callbacks...")
         self.bookChanged = bookChangedHandler
+        self.whaleEnteredMarket = whaleEnteredMarketHandler
 
 
     def onMessage(self, message):
@@ -62,7 +65,8 @@ class MarinerOrderBook(GDAX.OrderBook):
             self.change(message)
 
         self._sequence = sequence
-        self.bookChanged()
+        if not self.bookChanged is None:
+            self.bookChanged()
 
 
     def add(self, order):
@@ -101,6 +105,8 @@ class MarinerOrderBook(GDAX.OrderBook):
                 print("WHALE ENTERED (BUY): price=" + str(price) + " volume=" + str(volume))
                 whale_bid_order = WhaleOrder(ID, price, volume)
                 self.set_whale_bid(price, whale_bid_order)
+            if not self.whaleEnteredMarket is None:
+                self.whaleEnteredMarket(order)
 
 
     def checkWhaleAddSell(self, order):
@@ -113,6 +119,8 @@ class MarinerOrderBook(GDAX.OrderBook):
                 print("WHALE ENTERED (SELL): price=" + str(price) + " volume=" + str(volume))
                 whale_ask_order = WhaleOrder(ID, price, volume)
                 self.set_whale_ask(price, whale_ask_order)
+            if not self.whaleEnteredMarket is None:
+                self.whaleEnteredMarket(order)
 
     def remove(self, order):
         order = {

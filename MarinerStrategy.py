@@ -3,7 +3,6 @@ from operator import itemgetter
 from bintrees import RBTree
 from decimal import Decimal
 from MarinerOrderBook import MarinerOrderBook
-from MarinerOrderBookHandler import MarinerOrderBookHandler
 
 from GDAX.PublicClient import PublicClient
 from GDAX.WebsocketClient import WebsocketClient
@@ -25,22 +24,26 @@ class MarinerStrategy(WebsocketClient):
         stats = self._public_client.getProduct24HrStats(self._ticker)
         volume = Decimal(stats['volume'])
         threshold = self._percent * volume
-        print("threshold is " + str(threshold))
-        return 5
+        return threshold
 
 
     def start(self):
         print("    starting whale...")
-        self._book.registerHandlers(self.bookUpdated)
         self._book.start()
+        time.sleep(3) #let data structures warm up
+        self._book.registerHandlers(self.bookUpdatedHandler, self.whaleEnteredMarketHandler)
 
 
-    def bookUpdated(self):
-        self.updateBidWhale()
-        self.updateAskWhale()
+    def bookUpdatedHandler(self):
+        return
+
+    def whaleEnteredMarketHandler(self, order):
+        print("whale entered market...")
+        self.updateTopBidWhale()
+        self.updateTopAskWhale()
 
 
-    def updateBidWhale(self):
+    def updateTopBidWhale(self):
         bid_whale = self._book.get_top_whale_bid()
         price = bid_whale.get_price()
         volume = bid_whale.get_volume()
@@ -57,7 +60,7 @@ class MarinerStrategy(WebsocketClient):
                     print("    top bid whale is now " + str(self._top_bid_whale))
 
 
-    def updateAskWhale(self):
+    def updateTopAskWhale(self):
         ask_whale = self._book.get_top_whale_ask()
         price = ask_whale.get_price()
         volume = ask_whale.get_volume()
