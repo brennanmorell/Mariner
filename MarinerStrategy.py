@@ -21,7 +21,7 @@ class MarinerStrategy():
         stats = self._public_client.getProduct24HrStats(ticker)
         volume = Decimal(stats['volume'])
         threshold = percent * volume
-        return threshold
+        return 20
 
 
     def start(self):
@@ -32,6 +32,16 @@ class MarinerStrategy():
 
 
     def bookUpdatedHandler(self):
-        return
+        self._top_bid = self._book.get_bid()
+        self._top_ask = self._book.get_ask()
+
+        self._top_bid_whale = self._tracker.get_top_bid_whale()
+        self._top_ask_whale = self._tracker.get_top_ask_whale()
+
+        print("    top bid: " + str(self._top_bid))
+        print("    top ask: " + str(self._top_ask))
+        print("    top bid whale: " + str(self._top_bid_whale))
+        print("    top ask whale " + str(self._top_ask_whale))
+        print("\n")
 
 

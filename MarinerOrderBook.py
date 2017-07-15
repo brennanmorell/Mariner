@@ -223,7 +223,10 @@ class MarinerOrderBook(GDAX.OrderBook):
 
     #For general book management purposes
     def get_bid(self):
-        return self._bids.max_key()
+        if not self._bids.is_empty():
+            return self._bids.max_key()
+        else:
+            return None
 
 
     def get_bids(self, price):
@@ -239,7 +242,10 @@ class MarinerOrderBook(GDAX.OrderBook):
 
 
     def get_ask(self):
-        return self._asks.min_key()
+        if not self._asks.is_empty():
+            return self._asks.min_key()
+        else:
+            return None
 
 
     def get_asks(self, price):
