@@ -31,7 +31,7 @@ class MarinerStrategy(WebsocketClient):
         print("    starting whale...")
         self._book.start()
         time.sleep(3) #let data structures warm up
-        self._book.registerHandlers(self.bookUpdatedHandler, self.whaleEnteredMarketHandler)
+        self._book.registerHandlers(self.bookUpdatedHandler, self.whaleEnteredMarketHandler, self.whaleExitedMarketHandler)
 
 
     def bookUpdatedHandler(self):
@@ -39,6 +39,11 @@ class MarinerStrategy(WebsocketClient):
 
     def whaleEnteredMarketHandler(self, order):
         print("whale entered market...")
+        self.updateTopBidWhale()
+        self.updateTopAskWhale()
+
+    def whaleExitedMarketHandler(self, order):
+        print("whale exited market...")
         self.updateTopBidWhale()
         self.updateTopAskWhale()
 
