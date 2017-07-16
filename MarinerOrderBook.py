@@ -1,4 +1,4 @@
-import GDAX
+import GDAX, time
 from operator import itemgetter
 from bintrees import RBTree
 from decimal import Decimal
@@ -186,6 +186,7 @@ class MarinerOrderBook(GDAX.OrderBook):
             'sequence': self._sequence,
             'asks': [],
             'bids': [],
+            'timstamp': int(time.time())
         }
         for ask in self._asks:
             try:
