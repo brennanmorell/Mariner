@@ -6,6 +6,7 @@ from decimal import Decimal
 from GDAX.PublicClient import PublicClient
 from GDAX.WebsocketClient import WebsocketClient
 from WhaleOrder import WhaleOrder
+from Logging import Logging
 
 class MarinerOrderBook(GDAX.OrderBook):
 
@@ -20,7 +21,7 @@ class MarinerOrderBook(GDAX.OrderBook):
 
 
     def registerHandlers(self, bookChangedHandler, whaleEnteredMarketHandler, whaleExitedMarketHandler, whaleChangedHandler):
-        print("registering callbacks...\n")
+        Logging.logger.info("registering callbacks...\n")
         self.bookChanged = bookChangedHandler
         self.whaleEnteredMarket = whaleEnteredMarketHandler
         self.whaleExitedMarket = whaleExitedMarketHandler
@@ -53,7 +54,7 @@ class MarinerOrderBook(GDAX.OrderBook):
             # ignore older messages (e.g. before order book initialization from getProductOrderBook)
             return
         elif sequence > self._sequence + 1:
-            print('Error: messages missing ({} - {}). Re-initializing websocket.'.format(sequence, self._sequence))
+            Logging.logger.error('Error: messages missing ({} - {}). Re-initializing websocket.'.format(sequence, self._sequence))
             self.close()
             self.start()
             return

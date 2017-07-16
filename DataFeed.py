@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from GDAX.PublicClient import PublicClient
 from DBService import DBService
+from Logging import Logging
 
 class DataFeed():
     def __init__(self, public_client, book, whale_tracker):
@@ -27,18 +28,18 @@ class DataFeed():
 
 
     def fetchTicker(self):
-        print("fetching ticker...")
+        #Logging.logger.info("fetching ticker...")
         tick = self._public_client.getProductTicker()
         self._db_service.write_ticker(tick)
 
     def fetchBookState(self):
-        print("fetching book state...")
+        #Logging.logger.info("fetching book state...")
         book_state = self._book.get_current_book()
         self._db_service.write_book_state(book_state)
 
 
     def fetchWhaleState(self):
-        print("fetching whale state...")
+        Logging.logger.info("fetching whale state...")
         whale_state = self._whale_tracker.get_current_whales()
         self._db_service.write_whale_state(whale_state)
 

@@ -5,6 +5,7 @@ from decimal import Decimal
 from GDAX.PublicClient import PublicClient
 from GDAX.WebsocketClient import WebsocketClient
 from WhaleOrder import WhaleOrder
+from Logging import Logging
 
 #-----DEPRECATED FOR NOW, MAY UTILIZE IN FUTURE-----
 class WhaleTracker():
