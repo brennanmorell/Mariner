@@ -6,7 +6,11 @@ from GDAX.PublicClient import PublicClient
 from GDAX.WebsocketClient import WebsocketClient
 from WhaleOrder import WhaleOrder
 
+#-----DEPRECATED FOR NOW, MAY UTILIZE IN FUTURE-----
 class WhaleTracker():
+
+    current_milli_time = lambda self: int(time.time() * 1000)
+
     def __init__(self, ticker):
         self._ticker = ticker
         self._bid_whales = RBTree()
@@ -101,6 +105,41 @@ class WhaleTracker():
                 self.set_ask_whale(price, ask_whale_order)
             else:
                 self.removeAskWhale(order)
+
+
+    def get_current_whales(self):
+        result = {
+            #'sequence': self._sequence,
+            'bids': [],
+            'asks': [],
+            'timestamp': self.current_milli_time()
+        }
+        for bid in self._bid_whales:
+            try:
+                # There can be a race condition here, where a price point is removed
+                # between these two ops
+                bid_whale = self._bid_whales[bid]
+            except KeyError:
+                continue
+
+                result['bids'].append([
+                    bid_whale.get_price(),
+                    bid_whale.get_volume(),
+                    bid_whale.get_id(),
+                ])
+        for ask in self._ask_whales:
+            try:
+                # There can be a race condition here, where a price point is removed
+                # between these two ops
+                ask_whale = self._asks[ask]
+            except KeyError:
+                continue
+                result['asks'].append([
+                    ask_whale.get_price(),
+                    ask_whale.get_volume(),
+                    ask_whale.get_id(),
+                ])
+        return result
 
 
     def get_top_bid_whale(self):

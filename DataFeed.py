@@ -6,9 +6,10 @@ from GDAX.PublicClient import PublicClient
 from DBService import DBService
 
 class DataFeed():
-    def __init__(self, public_client, book):
+    def __init__(self, public_client, book, whale_tracker):
         self._public_client = public_client
         self._book = book
+        self._whale_tracker = whale_tracker
         self._db_service = DBService()
 
 
@@ -18,6 +19,7 @@ class DataFeed():
         while self._open:
             self.fetchTicker()
             self.fetchBookState()
+            self.fetchWhaleState()
 
 
     def stop(self):
@@ -30,10 +32,15 @@ class DataFeed():
         self._db_service.write_ticker(tick)
 
     def fetchBookState(self):
-        print("fetching book...")
+        print("fetching book state...")
         book_state = self._book.get_current_book()
-        print("book " + str(book_state))
         self._db_service.write_book_state(book_state)
+
+
+    def fetchWhaleState(self):
+        print("fetching whale state...")
+        whale_state = self._whale_tracker.get_current_whales()
+        self._db_service.write_whale_state(whale_state)
 
 
 

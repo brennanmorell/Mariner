@@ -8,6 +8,9 @@ from GDAX.WebsocketClient import WebsocketClient
 from WhaleOrder import WhaleOrder
 
 class MarinerOrderBook(GDAX.OrderBook):
+
+    current_milli_time = lambda self: int(time.time() * 1000)
+
     def __init__(self, ticker, threshold):
         GDAX.OrderBook.__init__(self, product_id = ticker)
         self._threshold = threshold
@@ -183,24 +186,11 @@ class MarinerOrderBook(GDAX.OrderBook):
 
     def get_current_book(self):
         result = {
-            'sequence': self._sequence,
-            'asks': [],
+            #'sequence': self._sequence,
             'bids': [],
-            'timstamp': int(time.time())
+            'asks': [],
+            'timestamp': self.current_milli_time()
         }
-        for ask in self._asks:
-            try:
-                # There can be a race condition here, where a price point is removed
-                # between these two ops
-                thisAsk = self._asks[ask]
-            except KeyError:
-                continue
-            for order in thisAsk:
-                result['asks'].append([
-                    order['price'],
-                    order['size'],
-                    order['id'],
-                ])
         for bid in self._bids:
             try:
                 # There can be a race condition here, where a price point is removed
@@ -211,6 +201,19 @@ class MarinerOrderBook(GDAX.OrderBook):
 
             for order in thisBid:
                 result['bids'].append([
+                    order['price'],
+                    order['size'],
+                    order['id'],
+                ])
+        for ask in self._asks:
+            try:
+                # There can be a race condition here, where a price point is removed
+                # between these two ops
+                thisAsk = self._asks[ask]
+            except KeyError:
+                continue
+            for order in thisAsk:
+                result['asks'].append([
                     order['price'],
                     order['size'],
                     order['id'],
