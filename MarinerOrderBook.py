@@ -21,7 +21,7 @@ class MarinerOrderBook(GDAX.OrderBook):
 
 
     def registerHandlers(self, bookChangedHandler, whaleEnteredMarketHandler, whaleExitedMarketHandler, whaleChangedHandler):
-        Logging.logger.info("registering callbacks...\n")
+        Logging.logger.info("registering callbacks...")
         self.bookChanged = bookChangedHandler
         self.whaleEnteredMarket = whaleEnteredMarketHandler
         self.whaleExitedMarket = whaleExitedMarketHandler
@@ -29,6 +29,7 @@ class MarinerOrderBook(GDAX.OrderBook):
 
 
     def onMessage(self, message):
+        #Logging.logger.info(message)
         sequence = message['sequence']
         if self._sequence == -1:
             self._asks = RBTree()
@@ -185,40 +186,50 @@ class MarinerOrderBook(GDAX.OrderBook):
             self.whaleChanged(order)
 
 
-    def get_current_book(self):
+    def get_current_book(self, num_levels = 10): #fetch only 1000 levels off book either way
         result = {
             #'sequence': self._sequence,
             'bids': [],
             'asks': [],
             'timestamp': self.current_milli_time()
         }
+        bid_count = 0
         for bid in self._bids:
-            try:
-                # There can be a race condition here, where a price point is removed
-                # between these two ops
-                thisBid = self._bids[bid]
-            except KeyError:
-                continue
+            if bid_count < num_levels:
+                try:
+                    # There can be a race condition here, where a price point is removed
+                    # between these two ops
+                    thisBid = self._bids[bid]
+                except KeyError:
+                    continue
 
-            for order in thisBid:
-                result['bids'].append([
-                    order['price'],
-                    order['size'],
-                    order['id'],
-                ])
+                for order in thisBid:
+                    result['bids'].append([
+                        order['price'],
+                        order['size'],
+                        order['id'],
+                    ])
+                bid_count+=1
+            else:
+                break
+        ask_count = 0
         for ask in self._asks:
-            try:
-                # There can be a race condition here, where a price point is removed
-                # between these two ops
-                thisAsk = self._asks[ask]
-            except KeyError:
-                continue
-            for order in thisAsk:
-                result['asks'].append([
-                    order['price'],
-                    order['size'],
-                    order['id'],
-                ])
+            if ask_count < num_levels:
+                try:
+                    # There can be a race condition here, where a price point is removed
+                    # between these two ops
+                    thisAsk = self._asks[ask]
+                except KeyError:
+                    continue
+                for order in thisAsk:
+                    result['asks'].append([
+                        order['price'],
+                        order['size'],
+                        order['id'],
+                    ])
+                ask_count+=1
+            else:
+                break
         return result
 
 

@@ -108,38 +108,49 @@ class WhaleTracker():
                 self.removeAskWhale(order)
 
 
-    def get_current_whales(self):
+    def get_current_whales(self, num_whales = 30): #by default, fetch only 30 whales off the book either way
+        print("num whales is " + str(num_whales))
         result = {
             #'sequence': self._sequence,
             'bids': [],
             'asks': [],
             'timestamp': self.current_milli_time()
         }
+        bid_whale_count = 0
         for bid in self._bid_whales:
-            try:
-                # There can be a race condition here, where a price point is removed
-                # between these two ops
-                bid_whale = self._bid_whales[bid]
-            except KeyError:
-                continue
+            if bid_whale_count < num_whales:
+                try:
+                    # There can be a race condition here, where a price point is removed
+                    # between these two ops
+                    bid_whale = self._bid_whales[bid]
+                except KeyError:
+                    continue
 
-                result['bids'].append([
-                    bid_whale.get_price(),
-                    bid_whale.get_volume(),
-                    bid_whale.get_id(),
-                ])
+                    result['bids'].append([
+                        bid_whale.get_price(),
+                        bid_whale.get_volume(),
+                        bid_whale.get_id(),
+                    ])
+                    bid_whale_count+=1
+            else:
+                break
+        ask_whale_count = 0
         for ask in self._ask_whales:
-            try:
-                # There can be a race condition here, where a price point is removed
-                # between these two ops
-                ask_whale = self._asks[ask]
-            except KeyError:
-                continue
-                result['asks'].append([
-                    ask_whale.get_price(),
-                    ask_whale.get_volume(),
-                    ask_whale.get_id(),
-                ])
+            if ask_whale_count < num_whales:
+                try:
+                    # There can be a race condition here, where a price point is removed
+                    # between these two ops
+                    ask_whale = self._ask_whales[ask]
+                except KeyError:
+                    continue
+                    result['asks'].append([
+                        ask_whale.get_price(),
+                        ask_whale.get_volume(),
+                        ask_whale.get_id(),
+                    ])
+                    ask_whale_count+=1
+            else:
+                break
         return result
 
 
@@ -160,6 +171,7 @@ class WhaleTracker():
 
 
     def set_bid_whale(self, price, whale):
+        print("")
         self._bid_whales.insert(price, whale)
 
 

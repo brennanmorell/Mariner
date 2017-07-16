@@ -24,14 +24,15 @@ class MarinerStrategy():
         stats = self._public_client.getProduct24HrStats(ticker)
         volume = Decimal(stats['volume'])
         threshold = percent * volume
-        return 20
+        print("threshold is " + str(threshold))
+        return 10
 
 
     def start(self):
         Logging.logger.info("starting mariner...")
-        #self._book.start()
-        #time.sleep(3) #let data structures warm up
-        #self._book.registerHandlers(self.bookUpdatedHandler, self._whale_tracker.whaleEnteredMarketHandler, self._whale_tracker.whaleExitedMarketHandler, self._whale_tracker.whaleChangedHandler)
+        self._book.start()
+        time.sleep(3) #let data structures warm up
+        self._book.registerHandlers(self.bookUpdatedHandler, self._whale_tracker.whaleEnteredMarketHandler, self._whale_tracker.whaleExitedMarketHandler, self._whale_tracker.whaleChangedHandler)
         self._tick_feed.start()
 
 
