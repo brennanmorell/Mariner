@@ -36,7 +36,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Shouts out to https://github.com/danpaquin for the dope python wrapper
-* Inspiration: Captain Ahab, [MrSuicidesheep](https://www.youtube.com/watch?v=N2mVfpDHr9k)
+* Inspiration: [MrSuicidesheep](https://www.youtube.com/watch?v=N2mVfpDHr9k)
 
 ## Buy Us Coffee
 * BTC Wallet: 14zD9tvv6BbF47PYtyXaF9b8cSgwG5btxo
