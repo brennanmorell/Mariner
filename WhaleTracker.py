@@ -44,7 +44,7 @@ class WhaleTracker():
         volume = Decimal(order['size'])
         bid_whale_order = self.get_bid_whale(price)
         if bid_whale_order is None or volume > bid_whale_order.get_volume():
-            #print("    NEW WHALE ENTERED (BID): price=" + str(price) + " volume=" + str(volume))
+            Logging.logger.info("NEW WHALE ENTERED (BID): price=" + str(price) + " volume=" + str(volume))
             bid_whale_order = WhaleOrder(ID, price, volume)
             self.set_bid_whale(price, bid_whale_order)
 
@@ -55,7 +55,7 @@ class WhaleTracker():
         volume = Decimal(order['size'])
         ask_whale_order = self.get_ask_whale(price)
         if ask_whale_order is None or volume > ask_whale_order.get_volume():
-            #print("    NEW WHALE ENTERED (ASK): price=" + str(price) + " volume=" + str(volume))
+            Logging.logger.info("NEW WHALE ENTERED (ASK): price=" + str(price) + " volume=" + str(volume))
             ask_whale_order = WhaleOrder(ID, price, volume)
             self.set_ask_whale(price, ask_whale_order)
 
@@ -66,7 +66,7 @@ class WhaleTracker():
         volume = Decimal(order['size'])
         bid_whale_order = self.get_bid_whale(price)
         if bid_whale_order is not None and bid_whale_order.get_id() == ID:
-            #print("    WHALE LEFT (BID): price=" + str(price) + " volume=" + str(volume))
+            Logging.logger.info("WHALE LEFT (BID): price=" + str(price) + " volume=" + str(volume))
             self.remove_bid_whale(price)
 
 
@@ -76,7 +76,7 @@ class WhaleTracker():
         volume = Decimal(order['size'])
         ask_whale_order = self.get_ask_whale(price)
         if ask_whale_order is not None and ask_whale_order.get_id() == ID:
-            #print("    WHALE LEFT (ASK): price=" + str(price) + " volume=" + str(volume))
+            Logging.logger.info("WHALE LEFT (ASK): price=" + str(price) + " volume=" + str(volume))
             self.remove_ask_whale(price)
 
 
@@ -86,7 +86,7 @@ class WhaleTracker():
         new_volume = order['new_size']
         bid_whale_order = self.get_bid_whale(price)
         if not bid_whale_order == None:
-            #print("    WHALE CHANGED (BID): price=" + price + " new_volume=" + new_volume)
+            Logger.logging.info("WHALE CHANGED (BID): price=" + price + " new_volume=" + new_volume)
             if self.isWhale(new_volume):
                 bid_whale_order.setVolume(new_volume)
                 self.set_bid_whale(price, bid_whale_order)
@@ -100,7 +100,7 @@ class WhaleTracker():
         new_volume = order['new_size']
         ask_whale_order = self.get_ask_whale(price)
         if not ask_whale_order == None:
-            #print("    WHALE CHANGED (ASK): price=" + price + " new_volume=" + new_volume)
+            Logger.logging.info("WHALE CHANGED (ASK): price=" + price + " new_volume=" + new_volume)
             if self.isWhale(new_volume):
                 ask_whale_order.setVolume(new_volume)
                 self.set_ask_whale(price, ask_whale_order)
@@ -109,7 +109,6 @@ class WhaleTracker():
 
 
     def get_current_whales(self, num_whales = 30): #by default, fetch only 30 whales off the book either way
-        print("num whales is " + str(num_whales))
         result = {
             #'sequence': self._sequence,
             'bids': [],

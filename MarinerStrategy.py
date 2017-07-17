@@ -1,4 +1,4 @@
-import GDAX, time
+import GDAX, time, threading
 from operator import itemgetter
 from bintrees import RBTree
 from decimal import Decimal
@@ -16,7 +16,7 @@ class MarinerStrategy():
         self._public_client = PublicClient(product_id = ticker)
         self._book = MarinerOrderBook(ticker = ticker, threshold = self.computeVolumeThreshold(ticker, Decimal(percent)))
         self._whale_tracker = WhaleTracker(ticker = ticker)
-        self._tick_feed = DataFeed(self._public_client, self._book, self._whale_tracker)
+        self._feed = DataFeed(self._public_client, self._book, self._whale_tracker)
         self._top_bid_whale = None
         self._top_ask_whale = None
 
@@ -28,12 +28,13 @@ class MarinerStrategy():
         return 10
 
 
-    def start(self):
+    def run(self):
         Logging.logger.info("starting mariner...")
-        self._book.start()
+        self._book.start() #thread 1 (start is by default on a separate thread)
         time.sleep(3) #let data structures warm up
         self._book.registerHandlers(self.bookUpdatedHandler, self._whale_tracker.whaleEnteredMarketHandler, self._whale_tracker.whaleExitedMarketHandler, self._whale_tracker.whaleChangedHandler)
-        self._tick_feed.start()
+        t2 = threading.Thread(name = 'data_feed', target = self._feed.start())
+        t2.start()
 
 
     def bookUpdatedHandler(self):

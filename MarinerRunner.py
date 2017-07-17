@@ -6,4 +6,4 @@ if __name__ == '__main__':
     TICKER = 'ETH-USD'
     PERCENT = .0005
     whale_strat = MarinerStrategy(sentiment = MARKET_SENTIMENT, ticker = TICKER, percent = PERCENT)
-    whale_strat.start()
+    whale_strat.run()

@@ -15,7 +15,7 @@ class DataFeed():
 
 
     def start(self):
-        print("starting...")
+        print("starting feed...")
         self._open = True
         while self._open:
             self.fetchTicker()
@@ -39,7 +39,7 @@ class DataFeed():
 
 
     def fetchWhaleState(self):
-        Logging.logger.info("fetching whale state...")
+        #Logging.logger.info("fetching whale state...")
         whale_state = self._whale_tracker.get_current_whales()
         self._db_service.write_whale_state(whale_state)
 
