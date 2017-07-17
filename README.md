@@ -15,7 +15,7 @@ If you don't have pip, you can install it here: https://pip.pypa.io/en/stable/in
 
 * [Python3](https://github.com/python)
 * [GDAX-Python](https://github.com/danpaquin/gdax-python)
-* Other tech. Will udpate later.
+* [Arctic-MongoDB] (https://github.com/manahl/arctic)
 
 ## Further Reading
 
