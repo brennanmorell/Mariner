@@ -23,11 +23,11 @@ Check out GDAX's official API docs for inspiration and clarification (https://do
 
 ## 
 
-* **Brennan Morell** - *Development, Quant Analysis*
-* **Surya Bahubalendruni** - *System Architecture, Quant Analysis*
-* **Ryan Sharma** - *Strategy*
-* **Jacob Solawetz** - *Quant Research*
-* **Rahil Mathur** - *Quant Research*
+* **Brennan Morell** - *Software Development, Research*
+* **Surya Bahubalendruni** - *System Architecture, Research*
+* **Ryan Sharma** - *Strategy Development, Research*
+* **Jacob Solawetz** - *Data Analysis, Research*
+* **Rahil Mathur** - *Data Analysis, Research*
 
 ## License
 
