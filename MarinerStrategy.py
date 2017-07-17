@@ -24,8 +24,7 @@ class MarinerStrategy():
         stats = self._public_client.getProduct24HrStats(ticker)
         volume = Decimal(stats['volume'])
         threshold = percent * volume
-        print("threshold is " + str(threshold))
-        return 10
+        return threshold
 
 
     def run(self):

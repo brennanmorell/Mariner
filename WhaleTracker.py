@@ -170,7 +170,6 @@ class WhaleTracker():
 
 
     def set_bid_whale(self, price, whale):
-        print("")
         self._bid_whales.insert(price, whale)
 
 
