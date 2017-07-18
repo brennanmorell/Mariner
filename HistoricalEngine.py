@@ -1,24 +1,23 @@
+import gdax
 import xlsxwriter
 import os, re, sys, time, datetime, copy, shutil
 
-from GDAX.PublicClient import PublicClient
-from GDAX.WebsocketClient import WebsocketClient
 
-
-class HistoricalEngine(WebsocketClient):
-    def __init__(self, public_client):
+class HistoricalEngine():
+    def __init__(self, public_client, ticker):
         self._client = public_client
-        self._workbook = xlsxwriter.Workbook(str(self._client.productId) + '-HISTORICAL.xlsx')
+        self._ticker = ticker
+        self._workbook = xlsxwriter.Workbook(str(self._ticker) + '-HISTORICAL.xlsx')
         self._worksheet = self._workbook.add_worksheet()
         self._rowCount = 0
         self._lastTick = ""
         self._lastTickTime = 0
 
     def fetchData(self, begin_time, end_time):
-        print("Requesting " + str(self._client.productId))
+        print("Fetching " + self._ticker + "...")
         print("    from " + begin_time + " to " + end_time + ".")
         try:
-            historical_data = self._client.getProductHistoricRates(self, product = self._client.productId, start = begin_time, end = end_time, granularity='1')
+            historical_data = self._client.get_product_historic_rates(product_id = self._ticker, start = begin_time, end = end_time, granularity='1')
             if str(historical_data) == "[]":
                 print("    tick is empty...")
                 historical_data = self._lastTick
@@ -29,8 +28,8 @@ class HistoricalEngine(WebsocketClient):
                 self._lastTickTime = historical_data[0][0]
 
         except OSError as e:
-            print("Caught Error in " + str(self._client.productId) + ".")
-            print("    closing " + str(self._client.productId) + " workbook...")
+            print("Caught Error in " + str(self._ticker) + ".")
+            print("    closing " + str(self._ticker) + " workbook...")
             self._workbook.close()
             return False
 
@@ -46,7 +45,7 @@ class HistoricalEngine(WebsocketClient):
         return True
 
     def writeXLSX(self, stat_time, stat_low, stat_high, stat_open, stat_close, stat_volume):
-        print("    writing " + str(self._client.productId) + " workbook...")
+        print("    writing " + str(self._ticker) + " workbook...")
         self._worksheet.write(self._rowCount, 0, stat_time)
         self._worksheet.write(self._rowCount, 1, stat_low)
         self._worksheet.write(self._rowCount, 2, stat_high)
@@ -56,7 +55,7 @@ class HistoricalEngine(WebsocketClient):
         self._rowCount+=1
 
     def closeWorkbook(self):
-        print("    closing " + str(self._client.productId) + " workbook...")
+        print("    closing " + str(self._ticker) + " workbook...")
         self._workbook.close()
 
 

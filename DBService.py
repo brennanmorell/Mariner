@@ -12,18 +12,20 @@ class DBService():
 
 
     def write_ticker(self, tick):
-        Logging.logger.info("writing ticker to mongo db...")
-        #print(str(tick))
+        #Logging.logger.info("writing ticker to mongo db...")
+        print(str(tick))
+        return
 
 
     def write_book_state(self, book_state):
-        Logging.logger.info("writing book state to mongo db...")
-        #print(str(book_state))
+        #Logging.logger.info("writing book state to mongo db...")
+        print(str(book_state))
+        return
 
 
     def write_whale_state(self, whale_state):
-        Logging.logger.info("writing whale state to mongo db...")
-        #print(str(whale_state))
-
+        #Logging.logger.info("writing whale state to mongo db...")
+        print(str(whale_state))
+        return
 
 

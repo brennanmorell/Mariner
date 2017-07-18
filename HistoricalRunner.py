@@ -1,4 +1,4 @@
-import gdax as GDAX
+import gdax
 import time, calendar
 import datetime
 import signal, sys
@@ -7,18 +7,18 @@ from HistoricalEngine import HistoricalEngine
 
 class HistoricalRunner():
 	def __init__(self):
-		BTC_TICKER = 'BTC-USD'
+		#BTC_TICKER = 'BTC-USD'
 		ETH_TICKER = 'ETH-USD'
-		LTC_TICKER = 'LTC-USD'
+		#LTC_TICKER = 'LTC-USD'
 
-		btc_client = GDAX.PublicClient(product_id=BTC_TICKER)
-		eth_client = GDAX.PublicClient(product_id=ETH_TICKER)
-		ltc_client = GDAX.PublicClient(product_id=LTC_TICKER)
+		#btc_client = PublicClient(product_id=BTC_TICKER)
+		eth_client = gdax.PublicClient()
+		#ltc_client = PublicClient(product_id=LTC_TICKER)
 
-		self.btc_historicalEngine = HistoricalEngine(public_client = btc_client)
-		self.eth_historicalEngine = HistoricalEngine(public_client = eth_client)
-		self.ltc_historicalEngine = HistoricalEngine(public_client = ltc_cliegdax
-		self.curr_iso = btc_client.getTime()['iso'] #initialize current time in iso format
+		#self.btc_historicalEngine = HistoricalEngine(public_client = btc_client)
+		self.eth_historicalEngine = HistoricalEngine(public_client = eth_client, ticker = ETH_TICKER)
+		#self.ltc_historicalEngine = HistoricalEngine(public_client = ltc_cliegdax
+		self.curr_iso = eth_client.get_time()['iso'] #initialize current time in iso format
 		signal.signal(signal.SIGINT, self.signal_handler)
 
 	def signal_handler(self, signal, frame):
@@ -35,9 +35,9 @@ class HistoricalRunner():
 
 	def stop(self):
 		print("Stopping Runner.")
-		self.btc_historicalEngine.closeWorkbook()
+		#self.btc_historicalEngine.closeWorkbook()
 		self.eth_historicalEngine.closeWorkbook()
-		self.ltc_historicalEngine.closeWorkbook()
+		#self.ltc_historicalEngine.closeWorkbook()
 
 
 	def fetchHistoricalData(self):
@@ -50,7 +50,6 @@ class HistoricalRunner():
 
 		i = 0
 		while i < num_requests:
-			print("i is " + str(i))
 			if self.eth_historicalEngine.fetchData(times[i], times[i+1]):
 				print("")
 			else:
