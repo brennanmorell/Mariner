@@ -1,4 +1,4 @@
-import GDAX, time
+import gdax, time
 
 from decimal import Decimal
 from Logging import Logging

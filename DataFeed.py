@@ -1,15 +1,15 @@
-import GDAX, time
+import gdax, time
 from bintrees import RBTree
 from decimal import Decimal
 
-from GDAX.PublicClient import PublicClient
 from DBService import DBService
 from Logging import Logging
 
 class DataFeed():
-    def __init__(self, public_client, book, whale_tracker):
+    def __init__(self, public_client, book, whale_tracker, ticker):
         self._public_client = public_client
         self._book = book
+        self._ticker = ticker
         self._whale_tracker = whale_tracker
         self._db_service = DBService()
 
@@ -29,7 +29,7 @@ class DataFeed():
 
     def fetchTicker(self):
         #Logging.logger.info("fetching ticker...")
-        tick = self._public_client.getProductTicker()
+        tick = self._public_client.get_product_ticker(product_id=self._ticker)
         self._db_service.write_ticker(tick)
 
     def fetchBookState(self):

@@ -1,9 +1,9 @@
-import GDAX, time
+import gdax, time
 from bintrees import RBTree
 from decimal import Decimal
 
-from GDAX.PublicClient import PublicClient
-from GDAX.WebsocketClient import WebsocketClient
+#from gdax.public_client import PublicClient
+#from gdax.websocket_client import WebsocketClient
 from WhaleOrder import WhaleOrder
 from Logging import Logging
 

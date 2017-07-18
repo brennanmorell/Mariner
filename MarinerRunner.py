@@ -1,4 +1,4 @@
-import GDAX, time, logging
+import gdax
 from MarinerStrategy import MarinerStrategy
 
 if __name__ == '__main__':

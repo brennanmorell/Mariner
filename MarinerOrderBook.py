@@ -1,19 +1,18 @@
-import GDAX, time
+import gdax
+import time
 from operator import itemgetter
 from bintrees import RBTree
 from decimal import Decimal
 
-from GDAX.PublicClient import PublicClient
-from GDAX.WebsocketClient import WebsocketClient
 from WhaleOrder import WhaleOrder
 from Logging import Logging
 
-class MarinerOrderBook(GDAX.OrderBook):
+class MarinerOrderBook(gdax.OrderBook):
 
     current_milli_time = lambda self: int(time.time() * 1000)
 
     def __init__(self, ticker, threshold):
-        GDAX.OrderBook.__init__(self, product_id = ticker)
+        gdax.OrderBook.__init__(self, product_id = ticker)
         self._threshold = threshold
         self.bookChanged = None
         self.whaleEnteredMarket = None

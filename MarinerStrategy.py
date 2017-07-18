@@ -1,11 +1,12 @@
-import GDAX, time, threading
+import gdax
+import time, threading
 from operator import itemgetter
 from bintrees import RBTree
 from decimal import Decimal
 from MarinerOrderBook import MarinerOrderBook
 
-from GDAX.PublicClient import PublicClient
-from GDAX.WebsocketClient import WebsocketClient
+#from gdax.public_client import PublicClient
+#from gdax.websocket_client import WebsocketClient
 from WhaleTracker import WhaleTracker
 from DataFeed import DataFeed
 from Logging import Logging
@@ -13,15 +14,16 @@ from Logging import Logging
 class MarinerStrategy():
     def __init__(self, sentiment = 'BULL', ticker = 'BTC-USD', percent = Decimal(.0005)):
         self._sentiment = sentiment
-        self._public_client = PublicClient(product_id = ticker)
-        self._book = MarinerOrderBook(ticker = ticker, threshold = self.computeVolumeThreshold(ticker, Decimal(percent)))
-        self._whale_tracker = WhaleTracker(ticker = ticker)
-        self._feed = DataFeed(self._public_client, self._book, self._whale_tracker)
+        self._ticker = ticker
+        self._public_client = gdax.PublicClient()
+        self._book = MarinerOrderBook(ticker = self._ticker, threshold = self.computeVolumeThreshold(Decimal(percent)))
+        self._whale_tracker = WhaleTracker(ticker = self._ticker)
+        self._feed = DataFeed(self._public_client, self._book, self._whale_tracker, self._ticker)
         self._top_bid_whale = None
         self._top_ask_whale = None
 
-    def computeVolumeThreshold(self, ticker, percent):
-        stats = self._public_client.getProduct24HrStats(ticker)
+    def computeVolumeThreshold(self, percent):
+        stats = self._public_client.get_product_24hr_stats(self._ticker)
         volume = Decimal(stats['volume'])
         threshold = percent * volume
         return threshold
