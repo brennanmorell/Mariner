@@ -31,13 +31,14 @@ class DataFeed():
     def fetchTicker(self):
         #Logging.logger.info("fetching ticker...")
         tick = self._public_client.get_product_ticker(product_id=self._ticker)
-        tick_pd = pd.io.json.json_normalize(tick)
+        tick_pd = pd.DataFrame([tick])
         self._db_service.write_ticker(tick_pd)
 
     def fetchBookState(self):
         #Logging.logger.info("fetching book state...")
         book_state = self._book.get_current_book()
-        self._db_service.write_book_state(book_state)
+        book_state_pd = pd.io.json.json_normalize(book_state)
+        self._db_service.write_book_state(book_state_pd)
 
 
     def fetchWhaleState(self):

@@ -185,7 +185,7 @@ class MarinerOrderBook(gdax.OrderBook):
             self.whaleChanged(order)
 
 
-    def get_current_book(self, num_levels = 10): #fetch only 1000 levels off book either way
+    def get_current_book(self, num_levels = 1): #fetch only 1000 levels off book either way
         result = {
             #'sequence': self._sequence,
             'bids': [],
@@ -209,7 +209,6 @@ class MarinerOrderBook(gdax.OrderBook):
                         order['id'],
                     ])
                 bid_count+=1
-            else:
                 break
         ask_count = 0
         for ask in self._asks:
@@ -220,6 +219,7 @@ class MarinerOrderBook(gdax.OrderBook):
                     thisAsk = self._asks[ask]
                 except KeyError:
                     continue
+
                 for order in thisAsk:
                     result['asks'].append([
                         order['price'],
@@ -227,7 +227,6 @@ class MarinerOrderBook(gdax.OrderBook):
                         order['id'],
                     ])
                 ask_count+=1
-            else:
                 break
         return result
 
