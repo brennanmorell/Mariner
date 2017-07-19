@@ -1,4 +1,5 @@
 import gdax, time
+import pandas as pd
 from bintrees import RBTree
 from decimal import Decimal
 
@@ -30,7 +31,8 @@ class DataFeed():
     def fetchTicker(self):
         #Logging.logger.info("fetching ticker...")
         tick = self._public_client.get_product_ticker(product_id=self._ticker)
-        self._db_service.write_ticker(tick)
+        tick_pd = pd.io.json.json_normalize(tick)
+        self._db_service.write_ticker(tick_pd)
 
     def fetchBookState(self):
         #Logging.logger.info("fetching book state...")

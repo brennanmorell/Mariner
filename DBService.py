@@ -13,7 +13,8 @@ class DBService():
 
     def write_ticker(self, tick):
         #Logging.logger.info("writing ticker to mongo db...")
-        Logging.logger.info(str(tick))
+        #Logging.logger.info(str(tick))
+        print(tick)
         return
 
 
