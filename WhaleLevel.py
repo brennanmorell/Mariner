@@ -1,4 +1,4 @@
-
+#_____DEPRECATED FOR NOW_____
 class WhaleLevel():
 	def __init__(self, price, volume, orders, current_whale):
 		self._price = price

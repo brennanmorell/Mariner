@@ -29,19 +29,19 @@ class DataFeed():
 
 
     def fetchTicker(self):
-        #Logging.logger.info("fetching ticker...")
+        Logging.logger.info("fetching ticker...")
         tick = self._public_client.get_product_ticker(product_id=self._ticker)
         tick_pd = pd.DataFrame([tick])
         self._db_service.write_ticker(tick_pd)
 
     def fetchBookState(self):
-        #Logging.logger.info("fetching book state...")
+        Logging.logger.info("fetching book state...")
         book_state = self._book.get_current_book()
         self._db_service.write_book_state(book_state)
 
 
     def fetchWhaleState(self):
-        #Logging.logger.info("fetching whale state...")
+        Logging.logger.info("fetching whale state...")
         whale_state = self._whale_tracker.get_current_whales()
         self._db_service.write_whale_state(whale_state)
 

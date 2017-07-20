@@ -1,13 +1,10 @@
 import gdax, time
+import pandas as pd
 from bintrees import RBTree
 from decimal import Decimal
-
-#from gdax.public_client import PublicClient
-#from gdax.websocket_client import WebsocketClient
 from WhaleOrder import WhaleOrder
 from Logging import Logging
 
-#-----DEPRECATED FOR NOW, MAY UTILIZE IN FUTURE-----
 class WhaleTracker():
 
     current_milli_time = lambda self: int(time.time() * 1000)
@@ -55,7 +52,7 @@ class WhaleTracker():
         volume = Decimal(order['size'])
         ask_whale_order = self.get_ask_whale(price)
         if ask_whale_order is None or volume > ask_whale_order.get_volume():
-            #Logging.logger.info("NEW WHALE ENTERED (ASK): price=" + str(price) + " volume=" + str(volume))
+            Logging.logger.info("NEW WHALE ENTERED (ASK): price=" + str(price) + " volume=" + str(volume))
             ask_whale_order = WhaleOrder(ID, price, volume)
             self.set_ask_whale(price, ask_whale_order)
 
@@ -66,7 +63,7 @@ class WhaleTracker():
         volume = Decimal(order['size'])
         bid_whale_order = self.get_bid_whale(price)
         if bid_whale_order is not None and bid_whale_order.get_id() == ID:
-            #Logging.logger.info("WHALE LEFT (BID): price=" + str(price) + " volume=" + str(volume))
+            Logging.logger.info("WHALE LEFT (BID): price=" + str(price) + " volume=" + str(volume))
             self.remove_bid_whale(price)
 
 
@@ -76,7 +73,7 @@ class WhaleTracker():
         volume = Decimal(order['size'])
         ask_whale_order = self.get_ask_whale(price)
         if ask_whale_order is not None and ask_whale_order.get_id() == ID:
-            #Logging.logger.info("WHALE LEFT (ASK): price=" + str(price) + " volume=" + str(volume))
+            Logging.logger.info("WHALE LEFT (ASK): price=" + str(price) + " volume=" + str(volume))
             self.remove_ask_whale(price)
 
 
@@ -86,7 +83,7 @@ class WhaleTracker():
         new_volume = order['new_size']
         bid_whale_order = self.get_bid_whale(price)
         if not bid_whale_order == None:
-            #Logger.logging.info("WHALE CHANGED (BID): price=" + price + " new_volume=" + new_volume)
+            Logger.logging.info("WHALE CHANGED (BID): price=" + price + " new_volume=" + new_volume)
             if self.isWhale(new_volume):
                 bid_whale_order.setVolume(new_volume)
                 self.set_bid_whale(price, bid_whale_order)
@@ -100,7 +97,7 @@ class WhaleTracker():
         new_volume = order['new_size']
         ask_whale_order = self.get_ask_whale(price)
         if not ask_whale_order == None:
-            #Logger.logging.info("WHALE CHANGED (ASK): price=" + price + " new_volume=" + new_volume)
+            Logger.logging.info("WHALE CHANGED (ASK): price=" + price + " new_volume=" + new_volume)
             if self.isWhale(new_volume):
                 ask_whale_order.setVolume(new_volume)
                 self.set_ask_whale(price, ask_whale_order)
@@ -109,48 +106,31 @@ class WhaleTracker():
 
 
     def get_current_whales(self, num_whales = 30): #by default, fetch only 30 whales off the book either way
-        result = {
-            #'sequence': self._sequence,
-            'bids': [],
-            'asks': [],
-            'timestamp': self.current_milli_time()
-        }
-        bid_whale_count = 0
-        for bid in self._bid_whales:
-            if bid_whale_count < num_whales:
-                try:
-                    # There can be a race condition here, where a price point is removed
-                    # between these two ops
-                    bid_whale = self._bid_whales[bid]
-                except KeyError:
-                    continue
+        whales = []
 
-                    result['bids'].append([
-                        bid_whale.get_price(),
-                        bid_whale.get_volume(),
-                        bid_whale.get_id(),
-                    ])
-                    bid_whale_count+=1
-            else:
+        for index, bid_whale in self._bid_whales.items(True):
+            Logging.logger.info("in loop...")
+            if index == num_whales:
                 break
-        ask_whale_count = 0
-        for ask in self._ask_whales:
-            if ask_whale_count < num_whales:
-                try:
-                    # There can be a race condition here, where a price point is removed
-                    # between these two ops
-                    ask_whale = self._ask_whales[ask]
-                except KeyError:
-                    continue
-                    result['asks'].append([
-                        ask_whale.get_price(),
-                        ask_whale.get_volume(),
-                        ask_whale.get_id(),
-                    ])
-                    ask_whale_count+=1
             else:
+                whales.append({
+                    'price': bid_whale.get_price(),
+                    'volume': bid_whale.get_volume(),
+                    'id': bid_whale.get_id(),
+                })
+
+        for index, ask_whale in self._ask_whales.items():
+            if index == num_whales:
                 break
-        return result
+            else:
+                whales.append({
+                    'price': ask_whale.get_price(),
+                    'volume': ask_whale.get_volume(),
+                    'id': ask_whale.get_id(),
+                })
+
+        whales_frame = pd.DataFrame(whales)
+        return whales_frame
 
 
     def get_top_bid_whale(self):

@@ -263,12 +263,3 @@ class MarinerOrderBook(gdax.OrderBook):
 
     def set_asks(self, price, asks):
         self._asks.insert(price, asks)
-
-
-"""if __name__ == '__main__':
-    import time
-
-    order_book = OrderBook()
-    order_book.start()
-    time.sleep(10)
-    order_book.close()"""

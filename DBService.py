@@ -12,22 +12,20 @@ class DBService():
 
 
     def write_ticker(self, tick):
-        #Logging.logger.info("writing ticker to mongo db...")
-        #print(str(tick.iloc[0]))
-        #{'trade_id': 7952304, 'price': '217.23000000', 'size': '32.12752755', 'bid': '217.22', 'ask': '217.23', 'volume': '863981.44534800', 'time': '2017-07-19T01:39:36.827000Z'}
+        Logging.logger.info("writing ticker to mongo db...")
+        #print(str(tick))
         return
 
 
     def write_book_state(self, book_state):
-        #Logging.logger.info("writing book state to mongo db...")
-        #Logging.logger.info(str(book_state))
-        print(book_state)
+        Logging.logger.info("writing book state to mongo db...")
+        #print(book_state)
         return
 
 
     def write_whale_state(self, whale_state):
-        #Logging.logger.info("writing whale state to mongo db...")
-        #Logging.logger.info(str(whale_state))
+        Logging.logger.info("writing whale state to mongo db...")
+        #print(whale_state)
         return
 
 
