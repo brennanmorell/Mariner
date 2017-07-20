@@ -37,8 +37,7 @@ class DataFeed():
     def fetchBookState(self):
         #Logging.logger.info("fetching book state...")
         book_state = self._book.get_current_book()
-        book_state_pd = pd.io.json.json_normalize(book_state)
-        self._db_service.write_book_state(book_state_pd)
+        self._db_service.write_book_state(book_state)
 
 
     def fetchWhaleState(self):

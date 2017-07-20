@@ -1,5 +1,7 @@
 import gdax
 import time
+import collections
+import pandas as pd
 from operator import itemgetter
 from bintrees import RBTree
 from decimal import Decimal
@@ -185,50 +187,39 @@ class MarinerOrderBook(gdax.OrderBook):
             self.whaleChanged(order)
 
 
-    def get_current_book(self, num_levels = 1): #fetch only 1000 levels off book either way
-        result = {
-            #'sequence': self._sequence,
-            'bids': [],
-            'asks': [],
-            'timestamp': self.current_milli_time()
-        }
-        bid_count = 0
-        for bid in self._bids:
-            if bid_count < num_levels:
+    def get_current_book(self, num_levels = 100): #fetch only 1000 levels off book either way
+        book = []
+
+        for index, bid_entry in enumerate(self._bids.items([True])):
+            if index == num_levels:
+                break
+            else:
                 try:
                     # There can be a race condition here, where a price point is removed
                     # between these two ops
-                    thisBid = self._bids[bid]
+                    thisBid = bid_entry[1]
                 except KeyError:
                     continue
 
                 for order in thisBid:
-                    result['bids'].append([
-                        order['price'],
-                        order['size'],
-                        order['id'],
-                    ])
-                bid_count+=1
+                    book.append(order)
+
+        for index, ask_entry in enumerate(self._asks.items()):
+            if index == num_levels:
                 break
-        ask_count = 0
-        for ask in self._asks:
-            if ask_count < num_levels:
+            else:
                 try:
                     # There can be a race condition here, where a price point is removed
                     # between these two ops
-                    thisAsk = self._asks[ask]
+                    thisAsk = ask_entry[1]
                 except KeyError:
                     continue
 
                 for order in thisAsk:
-                    result['asks'].append([
-                        order['price'],
-                        order['size'],
-                        order['id'],
-                    ])
-                ask_count+=1
-                break
-        return result
+                    book.append(order)
+
+        book_frame = pd.DataFrame(book)
+        return book_frame
 
 
     def isWhale(self, aVolume):
