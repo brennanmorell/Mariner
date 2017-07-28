@@ -19,7 +19,7 @@ class DBService():
 
     def write_book_state(self, book_state):
         Logging.logger.info("writing book state to mongo db...")
-        #print(book_state)
+        print(book_state)
         return
 
 

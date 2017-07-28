@@ -21,12 +21,12 @@ class MarinerStrategy():
         self._feed = DataFeed(self._public_client, self._book, self._whale_tracker, self._ticker)
         self._top_bid_whale = None
         self._top_ask_whale = None
-
+        
     def computeVolumeThreshold(self, percent):
         stats = self._public_client.get_product_24hr_stats(self._ticker)
         volume = Decimal(stats['volume'])
         threshold = percent * volume
-        return threshold
+        return 10
 
 
     def run(self):
@@ -45,9 +45,9 @@ class MarinerStrategy():
         self._top_bid_whale = self._whale_tracker.get_top_bid_whale()
         self._top_ask_whale = self._whale_tracker.get_top_ask_whale()
 
+        self.adjustOrders()
         #Logging.logger.info("    top bid: " + str(self._top_bid))
         #Logging.logger.info("    top ask: " + str(self._top_ask))
         #Logging.logger.info("    top bid whale: " + str(self._top_bid_whale))
         #Logging.logger.info("    top ask whale " + str(self._top_ask_whale))
-
 

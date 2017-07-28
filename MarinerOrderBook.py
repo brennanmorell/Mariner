@@ -187,7 +187,7 @@ class MarinerOrderBook(gdax.OrderBook):
             self.whaleChanged(order)
 
 
-    def get_current_book(self, num_levels = 100): #fetch only 1000 levels off book either way
+    def get_current_book(self, num_levels = 10): #fetch only 100 levels off book either way
         book = []
 
         for index, bid_entry in enumerate(self._bids.items([True])):
@@ -216,6 +216,7 @@ class MarinerOrderBook(gdax.OrderBook):
                     continue
 
                 for order in thisAsk:
+                    print("appending ask..")
                     book.append(order)
 
         book_frame = pd.DataFrame(book)
