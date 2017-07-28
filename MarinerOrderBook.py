@@ -216,7 +216,6 @@ class MarinerOrderBook(gdax.OrderBook):
                     continue
 
                 for order in thisAsk:
-                    print("appending ask..")
                     book.append(order)
 
         book_frame = pd.DataFrame(book)
