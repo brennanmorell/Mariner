@@ -4,6 +4,7 @@ import collections
 import pandas as pd
 from operator import itemgetter
 from bintrees import RBTree
+from bson.decimal128 import Decimal128
 from decimal import Decimal
 
 from WhaleOrder import WhaleOrder
@@ -202,6 +203,8 @@ class MarinerOrderBook(gdax.OrderBook):
                     continue
 
                 for order in thisBid:
+                    order['price'] = Decimal128(order['price'])
+                    order['size'] = Decimal128(order['size'])
                     book.append(order)
 
         for index, ask_entry in enumerate(self._asks.items()):
@@ -216,6 +219,8 @@ class MarinerOrderBook(gdax.OrderBook):
                     continue
 
                 for order in thisAsk:
+                    order['price'] = Decimal128(order['price'])
+                    order['size'] = Decimal128(order['size'])
                     book.append(order)
 
         book_frame = pd.DataFrame(book)

@@ -1,6 +1,7 @@
 import gdax, time
 import pandas as pd
 from bintrees import RBTree
+from bson.decimal128 import Decimal128
 from decimal import Decimal
 from WhaleOrder import WhaleOrder
 from Logging import Logging
@@ -113,8 +114,8 @@ class WhaleTracker():
                 break
             else:
                 whales.append({
-                    'price': bid_whale.get_price(),
-                    'volume': bid_whale.get_volume(),
+                    'price': Decimal128(bid_whale.get_price()),
+                    'volume': Decimal128(bid_whale.get_volume()),
                     'id': bid_whale.get_id(),
                 })
 
@@ -123,8 +124,8 @@ class WhaleTracker():
                 break
             else:
                 whales.append({
-                    'price': ask_whale.get_price(),
-                    'volume': ask_whale.get_volume(),
+                    'price': Decimal128(ask_whale.get_price()),
+                    'volume': Decimal128(ask_whale.get_volume()),
                     'id': ask_whale.get_id(),
                 })
 
